@@ -1,0 +1,128 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'space/main.css' %}">
+
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <!-- whyt -->
+    <system.web.extensions>
+        <scripting>
+            <webServices>
+                <jsonSerialization maxJsonLength="50000000" />
+            </webServices>
+        </scripting>
+    </system.web.extensions>
+    <!-- stakc shit-->
+    {% if title %}
+    <title>SpaceCats - {{ title }}</title>
+    {% else %}
+    <title>SpaceCats</title>
+    {% endif %}
+</head>
+
+<body
+    style="background-image: url('https://media.npr.org/assets/img/2020/08/27/nasa-goods-real_wide-9168d715c2d4c488d7a0e594b397d7abdd969d9d.png');">
+
+    <header class="site-header">
+        <!-- https://github.com/CoreyMSchafer/code_snippets/blob/master/Django_Blog/snippets/navigation.html -->
+        <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+            <div class="container">
+                <a class="sitelogo" href="{% url 'space-home' %}" style="align:center;">
+                    <img src="https://i.ibb.co/XtjMf7Q/Logo.png">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+                    aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarToggle">
+                    <div class="navbar-nav mr-auto">
+                        <a class="nav-item nav-link" href="{% url 'space-about' %}">About</a>
+                        <a class="nav-item nav-link" href="{% url 'ladder_ranking' %}">Ladder Ranking</a>
+                        <a class="nav-item nav-link" href="{% url 'space_hall_of_fame' %}">Hall Of Fame</a>
+                        <form action="{% url 'search' %}" method="post">
+                            {% csrf_token %}
+                            <input type="text" name="search">
+                            <input class="btn btn-outline-info" type="submit" value="Search">
+                        </form>
+                    </div>
+                    <!-- Navbar Right Side -->
+                    <div class="navbar-nav">
+                        {% if user.is_authenticated %}
+                        <a class="nav-item nav-link" href="{% url 'myposts' %}">MyPosts</a>
+                        <a class="nav-item nav-link" href="{% url 'galaxy' %}">MyGalaxy</a>
+                        <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+                        {% else %}
+                        <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+                        <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <audio id="myAudio">
+        <source src="media/Sonic meow.mp3" type="audio/mp3">
+    </audio>
+
+    <article class="catImage">
+        <img src="https://i.ibb.co/W5PGyQM/cat-png-for-use.png" style="width:200px; height:200px;" onclick="MeowIt()">
+
+    </article>
+
+
+    <main role="main" class="container">
+        <!-- https://github.com/CoreyMSchafer/code_snippets/blob/master/Django_Blog/snippets/main.html-->
+        <div class="row">
+            <div class="col-md-8">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{message.tags}}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif%}
+                {% block content %}{% endblock %}
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!-- fuck the slim version buddy i got one better on header :) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+</body>
+
+
+<script>
+    var x = document.getElementById("myAudio");
+
+    function MeowIt() {
+        x.play();
+    }
+
+</script>
+
+</body>
+
+</html>

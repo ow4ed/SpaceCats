@@ -1,0 +1,12 @@
+<article class="ranking-section" style="text-align:center;">
+    <h1><a class="article-title" href="{% url 'space_hall_of_fame' %}">The ranking</h1>
+    {% for ranked in ranking %}
+    {% if ranked.lasanhas.count != 0 %}
+    <div class="ranked-image-container">
+        <a class="ranked-image" href="{% url 'galaxys_galaxy' ranked.author.username %}">
+            <img  src="{{ ranked.image.url }}" style="width:100px;height:100px;">
+        </a>
+    </div>
+    {% endif %}
+    {% endfor %}
+</article>

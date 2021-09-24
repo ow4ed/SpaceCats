@@ -1,0 +1,16 @@
+{% if user.is_authenticated %}
+    {% if user.galaxy.blocked %}
+        <button class="btn btn-outline-info" onclick="notifyBlocked()">{{galaxy.followers.count}} Follow</button>
+    {% else %}
+    <form action="{% url 'follow_galaxy' %}" method="submit">
+        {% csrf_token %}
+        {% if is_followed %}
+            <button type="submit" id="galaxy" name="galaxy_id" value="{{ galaxy.id }}" class="btn btn-outline-info">{{galaxy.followers.count}} UnFollow</button>
+        {% else %}
+            <button type="submit" id="galaxy" name="galaxy_id" value="{{ galaxy.id }}" class="btn btn-outline-info">{{galaxy.followers.count}} Follow</button>
+        {% endif %}
+    </form>
+    {% endif %}
+{% else %}
+    <button class="btn btn-outline-info" onclick="notifyAuthentication()">{{galaxy.followers.count}} Follow</button>
+{% endif %}

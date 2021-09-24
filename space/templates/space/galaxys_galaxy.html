@@ -1,0 +1,125 @@
+{% extends "space/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="user-section" style="background-color: transparent;">
+    <div class="content-section">
+      <div>
+          <div class="media">
+              <img class="rounded-circle account-img" src="{{ galaxy.image.url }}">
+              <div class="media-body">
+                  <h2 class="account-heading">{{ galaxy.user.username }}'s Galaxy</h2>
+                  <p class="text-secondary">There are {{ total_posts }} Posts</p>
+                  <p class="text-secondary">There are {{ total_lasanhas }} Lasanhas</p>
+                  {% if request.user.galaxy != galaxy %}
+                        <div id="follow_galaxy_section" class="form-group">
+                            {% include 'space/follow_galaxy_section.html' %}
+                        </div>
+                  {% else %}
+                        <div>
+                            {{galaxy.followers.count}} Followers{{galaxy.followers.count|pluralize}}
+                        </div>
+                  {% endif %}
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+        <div class="media">
+            <div class="media-body">
+                {% include 'space/galaxy_medals.html' %}
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+      <div>
+          <div class="media">
+              <div class="media-body">
+                  <h2 class="account-heading">Meet the {{ stars.count }} stars of this galaxy</h2>
+                  {% for star in stars %}
+                   <a class="poster-image" href="{% url 'galaxys_galaxy' galaxy.user.username %}"><!-- posts que involvam esta star na pagina galaxys-->
+                       <img class="rounded-circle article-img" src="{{ star.image.url }}">
+                       <small>{{star.name}}</small>
+                       <br>
+                       {% if request.user.galaxy != galaxy %}
+                            <div id="follow_star_section{{star.id}}" class="form-group">
+                                {% include 'space/follow_star_section.html' %}
+                            </div>
+                       {% else %}
+                            <div>
+                                {{star.followers.count}} Followers{{star.followers.count|pluralize}}
+                            </div>
+                       {% endif %}
+                   </a>
+                  {% endfor %}
+              </div>
+          </div>
+      </div>
+    </div>
+
+     <div class="content-section">
+         <h3>Near galaxys:</h3>
+        <p></p>
+        {% for follower in followers %}
+        <a class="poster-image" href="{% url 'galaxys_galaxy' follower.user.username %}">
+            <img class="rounded-circle article-img" src="{{ follower.image.url }}">
+            <small>{{follower.user.username}}</small>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+    {% if not posts %}
+        <div class="post-section">
+            <h2> There are no posts !</h2>
+        </div>
+    {% else %}
+        {% include 'space/posts.html' %}
+    {% endif %}
+
+    <script>
+        $(document).ready(function (event) {
+            $(document).on('click', '#galaxy', function (event) {
+                event.preventDefault();
+                var pk = $(this).attr('value');
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "follow_galaxy" %}',
+                    data: {'id':pk, 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                    dataType: 'json',
+                    success: function(response){
+                        $('#follow_galaxy_section').html(response['form'])
+                    },
+                })
+            })
+        })
+    </script>
+    {% for star in stars %}
+        <script>
+            $(document).ready(function (event) {
+                $(document).on('click', '#star'+'{{ star.id }}', function (event) {
+                    event.preventDefault();
+                    var pk = $(this).attr('value');
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url "follow_star" %}',
+                        data: {'id':pk, 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                        dataType: 'json',
+                        success: function(response){
+                            $('#follow_star_section'+'{{star.id}}').html(response['form'])
+                        },
+                    })
+                })
+            })
+        </script>
+    {% endfor %}
+    <script>
+        function notifyAuthentication() {
+            alert("Sorry mate!You must be logged in to perform this action ...")
+        }
+        function notifyBlocked() {
+            alert("Sorry mate!Due to your rebel activities you can't perform this action ...")
+        }
+    </script>
+{% endblock content %}

@@ -1,0 +1,5 @@
+{% if user.is_authenticated %}
+
+{% else %}
+    <button class="btn btn-outline-info" onclick="notifyAuthentication()">Comment</button>
+{% endif %}

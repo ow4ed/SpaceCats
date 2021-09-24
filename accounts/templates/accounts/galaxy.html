@@ -1,0 +1,130 @@
+{% extends "space/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+    <article class="user-section" style="background-color: transparent;">
+        <div class="content-section">
+            <div class="media">
+                <img class="rounded-circle account-img" src="{{ user.galaxy.image.url }}">
+                <div class="media-body">
+                    <h2 class="account-heading">{{ user.username }}'s Galaxy</h2>
+                    <p class="text-secondary">{{ user.email}}</p>
+                </div>
+            </div>
+
+            <form action="{% url 'galaxy_settings' %}" method="get"><!-- enctype needed to save the image -->
+                {% csrf_token %}
+                <button class="btn btn-outline-danger" type="submit">Change settings</button>
+            </form>
+        </div>
+
+        <div class="content-section">
+
+            <div class="media">
+                <div class="media-body">
+                    {% include 'space/galaxy_medals.html' %}
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section" style="text-align:center;">
+            {% include 'accounts/galaxy_stars.html' %}
+        </div>
+    </article>
+
+
+    <div class="btn-group">
+        <button id="showGalaxyButton" class="btn btn-outline-primary" onclick="showGalaxyForm()">Post about Galaxy</button>
+        <button id="showStarButton" class="btn btn-outline-info" onclick="showStarForm()">Post about Stars</button>
+    </div>
+
+    <div id="GalaxyPost" style="display: none;">
+        <div class="post-section">
+            <form id="theGalaxyForm" action="{% url 'galaxy_form' %}" method="post" enctype="multipart/form-data"><!-- enctype needed to save the image -->
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    {{ galaxy_form|crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit">Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="StarPost" style="display: none;">
+        <div class="post-section">
+            <form id="theStarForm" action="{% url 'stars_form' %}" method="post" enctype="multipart/form-data"><!-- enctype needed to save the image -->
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    {{ stars_form|crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit">Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $('#theGalaxyForm').submit(function (e) {
+            e.preventDefault()
+
+            var form =$(this);
+            var url = form.attr('action');
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: form.serialize(),
+                success: function(response){
+                    $('galaxy').html(response['form']);
+                    document.getElementById('theGalaxyForm').reset();
+                    document.getElementById('showGalaxyButton').click();
+                },
+            })
+        })
+
+    </script>
+
+
+    {% if not posts %}
+        <div class="post-section">
+            <h2> There are no posts , go follow some galaxys or stars!</h2>
+        </div>
+    {% else %}
+        {% include 'space/posts.html' %}
+    {% endif %}
+
+<script>
+    function showGalaxyForm() {
+            var x = document.getElementById("GalaxyPost");
+            var y = document.getElementById("StarPost");
+            if(y.style.display === "block"){
+                y.style.display = "none";
+            }
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            }
+            else {
+                x.style.display = "none";
+            }
+    }
+
+    function showStarForm() {
+            var x = document.getElementById("StarPost");
+            var y = document.getElementById("GalaxyPost");
+            if(y.style.display === "block"){
+                y.style.display = "none";
+            }
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            }
+            else {
+                x.style.display = "none";
+            }
+    }
+</script>
+
+{% endblock content %}
+

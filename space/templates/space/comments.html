@@ -1,0 +1,46 @@
+{% load crispy_forms_tags %}
+<div id="comment_section{{post.id}}" class="form-group">
+    {% include 'space/comment_section.html' %}
+</div>
+
+{% if user.is_authenticated %}
+    {% if user.galaxy.blocked %}
+        <button class="btn btn-outline-info" onclick="notifyBlocked()">(Comment)</button>
+    {% else %}
+    <button id="commentButton{{post.id}}" class="btn btn-outline-info" onclick="showCommentForm('{{ post.id }}')">(Comment)</button>
+
+    <div id="theComment{{post.id}}" style="display: none;">
+        <form id="theCommentForm{{post.id}}" action="{% url 'comment' post.id %}"  method="submit" >
+            {% csrf_token %}
+            <fieldset class="form-group">
+                {{ comment_form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button type="submit" id="comment{{post.id}}" name="post_id" value="{{ post.id }}" class="btn btn-outline-info">Post</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        $('#theCommentForm'+'{{ post.id }}').submit(function (e) {
+            e.preventDefault()
+
+            var form =$(this);
+            var url = form.attr('action');
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: form.serialize(),
+                success: function(response){
+                    $('#comment_section'+'{{post.id}}').html(response['form']);
+                    document.getElementById('theCommentForm'+'{{post.id}}').reset();
+                    document.getElementById('commentButton'+'{{post.id}}').click();
+                },
+            })
+        })
+    </script>
+    {% endif %}
+{% else %}
+    <button class="btn btn-outline-info" onclick="notifyAuthentication()">Comment</button>
+{% endif %}

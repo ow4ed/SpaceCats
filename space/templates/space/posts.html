@@ -1,0 +1,153 @@
+{% load crispy_forms_tags %}
+    {% for post in posts %}
+        {% if post.reports.count < 9 and post.content is not None %}
+            <div id="reportWindow{{post.id}}" class="modal">
+                {% include 'space/report_section_type1.html' %}
+            </div>
+            <article class="media post-section">
+                <a class="poster-image" href="{% url 'galaxys_galaxy' post.author.username %}">
+                    <img class="rounded-circle article-img" src="{{ post.author.galaxy.image.url }}">
+                </a>
+              <div class="text-body">
+                  <div class="article-metadata">
+                    <a class="mr-2" href="{% url 'galaxys_galaxy' post.author.username %}">{{ post.author }}</a>
+                    <small class="text-muted">{{ post.date_posted|date:"d F, Y" }}</small>
+                  </div>
+                  <h2><a class="article-title" href="{% url 'galaxys_galaxy' post.author.username %}">{{ post.title }}</a></h2>
+                  <p class="article-content">{{ post.content }}</p>
+
+                  {% include 'space/comments.html' %}
+
+                  {% if post.author != request.user and request.user.is_authenticated %}
+
+                  <small>
+                        <button class="btn btn-outline-danger btn-sm" onclick="showReportWindow('{{post.id}}', 0)">Report Post</button>
+                  </small>
+
+                  {% else %}
+
+                   <small>
+                      <form action="{% url 'edit_post' post.id %}" method="get" style="display:inline;">
+                        <button class="btn btn-outline-warning btn-sm" type="submit">Edit Post</button>
+                      </form>
+                    </small>
+
+                  {% endif %}
+              </div>
+            </article>
+        {% else %}
+            {% if post.reports.count < 9 %}
+                <div id="reportWindow{{post.id}}" class="modal">
+                    {% include 'space/report_section_type2.html' %}
+                </div>
+                <article class="media post-section">
+                    <div class="media-body">
+                        {% for star in post.stars.all %}
+                            <a class="poster-image" href="{% url 'galaxys_galaxy' post.author.username %}">
+                                <img class="rounded-circle article-img" src="{{ star.image.url }}">
+                                <small>{{star.name}}</small>
+                            </a>
+                        {% endfor %}
+                        <div class="article-metadata">
+                            <small class="text-muted">{{ post.date_posted|date:"d F, Y" }}</small>
+                        </div>
+                        <h2><a class="article-title" href="{% url 'galaxys_galaxy' post.author.username %}">{{ post.title }}</a></h2>
+                        <img  class="mycss" src="{{ post.image.url }}" style="width:500px;height:500px;">
+                        <!-- USSR -->
+                        <div id="lasanha_section{{post.id}}" class="form-group">
+                            {% include 'space/lasanha_section.html' %}
+                        </div>
+                        <!-- USSR -->
+                        {% include 'space/comments.html' %}
+                        {% if post.author != request.user and request.user.is_authenticated %}
+                        <small>
+                            <button class="btn btn-outline-danger btn-sm" onclick="showReportWindow('{{post.id}}', 0)">Report Post</button>
+                        </small>
+                        {% endif %}
+                    </div>
+                </article>
+
+                <script>
+                    $(document).ready(function (event) {
+                        $(document).on('click', '#lasanha'+'{{ post.id }}', function (event) {
+                            event.preventDefault();
+                            var pk = $(this).attr('value');
+                            $.ajax({
+                                type: 'POST',
+                                url: '{% url "give_lasanha" %}',
+                                data: {'id':pk, 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                                dataType: 'json',
+                                success: function(response){
+                                    $('#lasanha_section'+'{{post.id}}').html(response['form'])
+                                },
+                            })
+                        })
+                    })
+                </script>
+            {% endif %}
+        {% endif %}
+
+        <script>
+            $('#report'+'{{ post.id }}').submit(function (e) {
+                e.preventDefault()
+                var form =$(this);
+                var url = form.attr('action');
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: form.serialize(),
+                    success: function(response){
+                        $('#reportWindow'+'{{post.id}}').html(response['form']);
+                    },
+                })
+            })
+        </script>
+
+    {% endfor %}
+
+
+
+    <script>
+        function showComments(post_id) {
+            var x = document.getElementById("theComments"+post_id);
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            }
+            else {
+                x.style.display = "none";
+            }
+        }
+
+        function showCommentForm(post_id) {
+            var x = document.getElementById("theComment"+post_id);
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            }
+            else {
+                x.style.display = "none";
+            }
+        }
+        function showReportWindow(post_id, op){
+            console.log("hello?"+post_id)
+            var x = document.getElementById("reportWindow"+post_id);
+
+            if(op == 1){
+                document.getElementById("reportWindow"+post_id);
+            }
+
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            }
+            else {
+                x.style.display = "none";
+            }
+        }
+
+        function notifyAuthentication() {
+            alert("Sorry mate!You must be logged in to perform this action ...")
+        }
+        function notifyBlocked() {
+            alert("Sorry mate!Due to your rebel activities you can't perform this action ...")
+        }
+    </script>

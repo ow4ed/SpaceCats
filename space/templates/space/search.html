@@ -1,0 +1,27 @@
+{% extends "space/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h1>{{search}}</h1>
+    ### butao Galaxys maches
+    {% for galaxy in galaxys %}
+        <div class="post-section">
+            <div>
+                <div class="media">
+                    <a class="poster-image" href="{% url 'galaxys_galaxy' galaxy.user.username %}">
+                        <img class="rounded-circle account-img" src="{{ galaxy.image.url }}">
+                    </a>
+                    <div class="media-body">
+                        <h2><a class="article-title" href="{% url 'galaxys_galaxy' galaxy.user.username %}">{{ galaxy.user.username }}'s Galaxy</a></h2>
+                        {% include 'space/galaxy_medals.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    #######uma parte ajax , butao Posts
+    {% include 'space/posts.html' %}
+
+
+
+{% endblock content %}

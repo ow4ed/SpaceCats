@@ -1,0 +1,28 @@
+{% extends "space/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+{% if not posts %}
+    <div class="post-section">
+        <h2> There are no posts , go make some posts!</h2>
+    </div>
+{% else %}
+<div class="post-section" style="text-align:center; background-color:transparent;">
+    <h1 style="color:white;">{{ user.username }} Posts</h1>
+    <div class="content-section">
+        <h3>The Stars</h3>
+        {% for star in stars %}
+            <div class="ranked-image-container">
+                <form action="{% url 'my_star_posts' star.id %}">
+                {% csrf_token %}
+                <button type="submit"><img  src="{{ star.image.url }}" style="width:100px;height:100px;"></button>
+                <h4>{{ star.name }}</h4>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% include 'space/posts.html' %}
+{% endif %}
+
+{% endblock content %}

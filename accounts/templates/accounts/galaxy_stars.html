@@ -1,0 +1,7 @@
+{% load crispy_forms_tags %}
+{% block content %}
+        {% for star in stars %}
+            {% include 'accounts/star.html' %}
+        {% endfor %}
+{% endblock content %}
+

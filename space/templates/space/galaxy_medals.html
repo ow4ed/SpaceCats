@@ -1,0 +1,32 @@
+{% load  my_filters %}
+
+{% if show_more_info %}
+    <h3>Medals:</h3>
+{% endif %}
+
+{% for i in galaxy.red_star_medals|times %}
+    <img src="/media/red.png" width="30" height="40"/>
+{% endfor %}
+
+{% for i in galaxy.gold_medals|times %}
+    <img src="/media/gold.png" width="30" height="40"/>
+{% endfor %}
+
+{% for i in galaxy.silver_medals|times %}
+    <img src="/media/silver.png" width="30" height="40"/>
+{% endfor %}
+
+{% for i in galaxy.bronze_medals|times %}
+    <img src="/media/bronze.png" width="30" height="40"/>
+{% endfor %}
+
+{% for i in galaxy.wood_medals|times %}
+    <img src="/media/wood.png" width="30" height="40"/>
+{% endfor %}
+
+<br>
+
+{% if show_more_info %}
+    ({{galaxy.red_star_medals|add:galaxy.gold_medals|add:galaxy.silver_medals|add:galaxy.bronze_medals|add:galaxy.wood_medals}})
+{% endif %}
+

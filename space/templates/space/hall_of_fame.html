@@ -1,0 +1,18 @@
+{% extends "space/base.html" %}
+{% block content %}
+<div class="post-section" style="background: transparent; text-align:center; box-shadow: 1px 1px 30px #D6AF4B;">
+    <h1 style="color:white; font-family: Impact, Charcoal, sans-serif; text-shadow: 2px 2px 10px #D6AF4B;">HALL OF FAME</h1>
+    <div class="content-section" style="box-shadow: 1px 1px 10px #D6AF4B;">
+        <form action="{% url 'space_hall_of_fame' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-warning">Current Month</button>
+        </form>
+        <form action="{% url 'space_hall_of_fame_last_month' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-warning">Last Month</button>
+        </form>
+    </div>
+</div>
+    {% include 'space/posts.html' %}
+{% endblock content %}
+

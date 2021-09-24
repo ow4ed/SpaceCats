@@ -1,0 +1,17 @@
+<button class="btn btn-outline-info" onclick="showComments('{{ post.id }}')">{{ post.comment_set.count }} See Comments{{post.comment_set.count|pluralize}}</button>
+    <div id="theComments{{post.id}}" style="display: none;">
+        {% for comment in post.comment_set.all %}
+        <article class="media content-section">
+            <a class="poster-image" href="{% url 'galaxys_galaxy' comment.author.username %}">
+                <img class="rounded-circle article-img" src="{{ comment.author.galaxy.image.url }}">
+            </a>
+            <div class="text-body">
+                <div class="article-metadata">
+                    <a class="mr-2" href="{% url 'galaxys_galaxy' comment.author.username %}">{{ comment.author }}</a>
+                    <small class="text-muted">{{ post.date_posted|date:"d F, Y" }}</small>
+                </div>
+                <p class="article-content">{{ comment.content }}</p>
+            </div>
+        </article>
+        {% endfor %}
+    </div>

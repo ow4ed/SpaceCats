@@ -1,0 +1,15 @@
+<div class="modal-content">
+    <h1 style="position:absolute; right:20px; top:10px;"><button class="btn btn-outline-danger" onclick="showReportWindow('{{post.id}}')">X</button></h1>
+    <h1>What is wrong with this post ?</h1>
+    <form id="report{{post.id}}" action="{% url 'report' post.id %}" method="post">
+        {% csrf_token %}
+        <h4><input type="checkbox" name="reason1"> Animal Abuse<br>
+        <input type="checkbox" name="reason2"> No Cat Reference<br>
+        <input type="checkbox" name="reason3"> Hate Speech<br>
+        <input type="checkbox" name="reason4"> Fake News<br>
+        <input type="checkbox" name="reason5"> Spam<br>
+        <input type="checkbox" name="reason6"> Unauthorized Sales<br>
+        <input type="checkbox" name="reason0"> Too much dog reference<br></h4><!--aqui vamos por um easteregg -->
+        <button class="btn btn-outline-info">Send Report</button>
+    </form>
+</div>

@@ -1,0 +1,12 @@
+ <article class="media content-star-section">
+    <div class="text-body">
+        <img class="rounded-circle account-img" src="{{ star.image.url }}">
+        <div class="article-metadata">
+            <h2 class="article-title">{{ star.name }}</h2>
+            <form action="{% url 'star_settings' star.id %}" method="get"><!-- enctype needed to save the image -->
+            {% csrf_token %}
+            <button class="btn btn-outline-danger btn-sm" type="submit">Change settings</button>
+        </form>
+        </div>
+    </div>
+ </article>
